@@ -10,13 +10,16 @@ pub(crate) fn spawn_beds(mut commands: Commands,
 {
     commands.spawn(Camera2dBundle::default());
 
+    let bed_sprite =  asset_server.load("bed.png");
+
     for x in 0..ROWS
     {
         for y in 0..COLUMNS
         {
             commands.spawn((
                 SpriteBundle {
-                    texture: asset_server.load("bed.png"),
+
+                    texture: bed_sprite.clone(),
                     transform: Transform::from_translation(Vec3::new(32. * (x as f32 - 2.), 32. * (y as f32 - 1.5), 0.)),
                     ..default() },
                 PlantBed{plant: None, row: x, column: y }));
