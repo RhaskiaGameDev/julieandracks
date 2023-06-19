@@ -3,10 +3,12 @@ use bevy::prelude::*;
 #[derive(Component)]
 struct Health
 {
-    health: i32;
+    health: i32,
 }
 
 fn main()
 {
-    println!("Hello, world!");
+    App::new()
+        .add_plugins(DefaultPlugins)
+        .run();
 }
