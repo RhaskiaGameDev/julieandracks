@@ -2,8 +2,8 @@ use bevy::prelude::*;
 use crate::gameinit::plants::PlantBed;
 mod plants;
 
-const ROWS: i32 = 4;
-const COLUMNS: i32 = 5;
+const ROWS: i32 = 5;
+const COLUMNS: i32 = 4;
 
 pub(crate) fn spawn_beds(mut commands: Commands,
                          asset_server: Res<AssetServer>)
@@ -17,6 +17,7 @@ pub(crate) fn spawn_beds(mut commands: Commands,
             commands.spawn((
                 SpriteBundle {
                     texture: asset_server.load("bed.png"),
+                    transform: Transform::from_translation(Vec3::new(32. * (x as f32 - 2.), 32. * (y as f32 - 1.5), 0.)),
                     ..default() },
                 PlantBed{plant: None, row: x, column: y }));
         }
