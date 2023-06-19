@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy::ecs::component::Component;
 
 #[derive(Component)]
 pub struct Health
@@ -14,7 +15,7 @@ pub struct Plant
 #[derive(Component)]
 pub struct PlantBed
 {
-    plant: Option<Plant>,
-    row: i32,
-    column: i32
+    pub plant: Option<Plant>,
+    pub row: i32,
+    pub column: i32
 }

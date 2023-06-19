@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use crate::gameinit::plants::PlantBed;
 mod plants;
 
 const ROWS: i32 = 4;
