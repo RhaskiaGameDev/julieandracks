@@ -1,4 +1,7 @@
 use bevy::prelude::*;
+use bevy::a11y::{accesskit::{NodeBuilder, Role}, AccessibilityNode};
+use bevy::input::mouse::{MouseScrollUnit, MouseWheel};
+use bevy::winit::WinitSettings;
 use bevy::ecs::component::Component;
 use bevy::window::PrimaryWindow;
 
@@ -7,6 +10,39 @@ pub struct Health
 {
     health: i32,
 }
+
+pub enum StickyEnum
+{
+    Left (f32),
+    Right (f32),
+    Up (f32),
+    Down (f32),
+}
+
+#[derive(Component)]
+pub struct Sticky
+{
+    dir: StickyEnum,
+}
+
+// pub fn manage_sticky(mut sticky_query: Query<(&Sticky, &mut Transform)>,
+//                      mut camera: Query<&mut OrthographicProjection>)
+// {
+//     let (width, height) = camera.single_mut().scale;
+//
+//     for sticky in sticky_query.iter_mut()
+//     {
+//         let mut trans: &mut Transform = sticky.1;
+//         let sticky: &Sticky = sticky.0;
+//         match sticky.dir
+//         {
+//             Sticky::Left(d) => trans.translation.x = -width / 2. + d,
+//             Sticky::Right(d) => trans.translation.x = width / 2. + d,
+//             Sticky::Up(d) => trans.translation.y = -height / 2. + d,
+//             Sticky::Down(d) => trans.translation.y = height / 2. + d,
+//         }
+//     }
+// }
 
 #[derive(Clone, PartialEq)]
 pub enum Season
@@ -54,11 +90,16 @@ pub(crate) fn spawn_beds(mut commands: Commands,
 
     commands.spawn(SeedBag { seeds: vec![ KUMARA.clone(), MANUKA.clone(), PUHA.clone()], selected:0});
 
-    commands.spawn(
-        SpriteBundle {
-            texture: asset_server.load("shelf.png"),
-            transform: Transform::from_translation(Vec3::new(0., 110., 0.)),
+    for y in 0..5
+    {
+        commands.spawn(
+            SpriteBundle {
+            texture: asset_server.load("shelfleft.png"),
+            transform: Transform::from_translation(Vec3::new(110., y as f32 * 10., 0.)),
             ..default() });
+    }
+
+
 
     let bed_sprite =  asset_server.load("bed.png");
 
@@ -71,10 +112,16 @@ pub(crate) fn spawn_beds(mut commands: Commands,
                     texture: bed_sprite.clone(),
                     transform: Transform::from_translation(Vec3::new(32. * (x as f32 - 2.), 32. * (y as f32 - 3.), 0.)),
                     ..default() },
-                PlantBed{ plant: None, row: x, column: y }));
+                PlantBed{ plant: None, row: x, column: y },
+                Health { health: 100 }));
         }
     }
 }
+
+//poub(crate) spawn_UI
+//{
+
+//}
 
 // will hover over beds and interact with them
 pub(crate) fn bed_interact(mut bed_query: Query<(&mut PlantBed, &mut Transform)>,
