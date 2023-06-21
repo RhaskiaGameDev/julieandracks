@@ -186,39 +186,10 @@ pub(crate) fn bed_interact(mut bed_query: Query<(&mut PlantBed, &mut Transform)>
     }
 }
 
-fn manage_attacks(
-    commands: Commands,
-    plant_query: Query<PlantBed>,
-    time: Res<Time>,
-) 
-{
-    for plant: PlantBed in plant_query.iter_mut()
-    {
-        if plant.plant.last_used.elapsed_secs < plant.plant.delay { continue; }
-        plant.last_used.reset();
 
-        match plant.plant.ability 
-        {
-            Shooter(p) => commands.spawn((SpriteBundle {
-                texture: bed_sprite.clone(),
-                transform: Transform::from_translation(Vec3::new(32. * (x as f32 - 2.), 32. * (y as f32 - 3.), 0.)),
-                ..default()}),
-                Projectile { speed: 10., pow: 10 }),
-            AOE(r, s) => 
-        }
-    }
-
-}
-
-fn manage_enemies()
-{
-    // move all up
-
-    // check if they hit anything, if so stop and attack
-}
 
 pub(crate) fn show_seeds(seed_bag: Query<&SeedBag>,
                         )
 {
-
+    // ui stuff ig
 }
