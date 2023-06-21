@@ -18,5 +18,5 @@ pub(crate) fn spawn_enemies(mut commands: Commands, asset_server: Res<AssetServe
         texture: asset_server.load("fly.png"),
         transform: Transform::from_translation(Vec3::new((row as f32 - 1.5) * 32, -130., 0.)),
         ..default()
-    }, Enemy { row }));
+    }, Enemy { row, speed: 10 }));
 }

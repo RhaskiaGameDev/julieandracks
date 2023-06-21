@@ -38,6 +38,8 @@ fn manage_enemies(mut query: Query<(&Enemy, &Health, &Transform)>,
     {
         let mut (enemy, health, trans) = e;
 
+        // idk check if they hit then start attacking
+
         trans.translation.y -= enemy.speed * time.delta_seconds();
     }
 
