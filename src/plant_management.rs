@@ -4,7 +4,7 @@ use bevy::input::mouse::{MouseScrollUnit, MouseWheel};
 use bevy::winit::WinitSettings;
 use bevy::ecs::component::Component;
 use bevy::window::PrimaryWindow;
-use bevy::time::StopWatch;
+use bevy::time::Stopwatch;
 
 #[derive(Component)]
 pub struct Health
@@ -26,24 +26,26 @@ pub struct Sticky
     dir: StickyEnum,
 }
 
-// pub fn manage_sticky(mut sticky_query: Query<(&Sticky, &mut Transform)>,
-//                      mut camera: Query<&mut OrthographicProjection>)
-// {
-//     let (width, height) = camera.single_mut().scale;
-//
-//     for sticky in sticky_query.iter_mut()
-//     {
-//         let mut trans: &mut Transform = sticky.1;
-//         let sticky: &Sticky = sticky.0;
-//         match sticky.dir
-//         {
-//             Sticky::Left(d) => trans.translation.x = -width / 2. + d,
-//             Sticky::Right(d) => trans.translation.x = width / 2. + d,
-//             Sticky::Up(d) => trans.translation.y = -height / 2. + d,
-//             Sticky::Down(d) => trans.translation.y = height / 2. + d,
-//         }
-//     }
-// }
+pub fn manage_sticky(mut sticky_query: Query<(&Sticky, &mut Transform)>,
+                     window_query: Query<&Window, With<PrimaryWindow>>)
+{
+    let window = window_query.get_single().unwrap();
+    let width = window.width();
+    let height = window.height();
+
+     for mut sticky in sticky_query.iter_mut()
+     {
+         let mut trans: &mut Transform = &mut sticky.1;
+         let sticky: &Sticky = sticky.0;
+         match sticky.dir
+         {
+             StickyEnum::Left(d) => trans.translation.x = -width / 2. + d,
+             StickyEnum::Right(d) => trans.translation.x = width / 2. + d,
+             StickyEnum::Up(d) => trans.translation.y = -height / 2. + d,
+             StickyEnum::Down(d) => trans.translation.y = height / 2. + d,
+         }
+     }
+}
 
 #[derive(Clone, PartialEq)]
 pub enum Season
@@ -54,31 +56,31 @@ pub enum Season
     Winter,
 }
 
+#[derive(Clone, PartialEq)]
 pub enum Ability 
 {
-    Shooter { pow: f32 }, // attack
-    AOE { radius: f32 },
-    Tank { heal: i32 },
+    Shooter (f32), // attack
+    AOE (f32),
+    Tank (i32),
     None,
 }
 
-#[derive(Component)]
+#[derive(Component, Clone, PartialEq)]
 pub struct Projectile 
 {
-    speed: f32,
-    damage: i32,
+    pub(crate) speed: f32,
+    pub(crate) damage: i32,
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone)]
 pub struct Plant
 {
     name: &'static str,
     sow: Season,
     harvest: Season,
-    ability: Ability,
-    last_used: StopWatch,
-    delay: f32,
-
+    pub(crate) ability: Ability,
+    pub(crate) last_used: Stopwatch,
+    pub(crate) delay: f32,
 }
 
 #[derive(Component)]
@@ -88,10 +90,6 @@ pub struct PlantBed
     pub row: i32,
     pub column: i32
 }
-
-const KUMARA: Plant = Plant { name: "Kumara", sow: Season::Autumn, harvest: Season::Spring };
-const MANUKA: Plant = Plant { name: "Manuka", sow: Season::Autumn, harvest: Season::Spring };
-const PUHA: Plant = Plant { name: "Puha", sow: Season::Autumn, harvest: Season::Spring };
 
 #[derive(Component)]
 pub struct SeedBag
@@ -108,7 +106,7 @@ pub(crate) fn spawn_beds(mut commands: Commands,
 {
     commands.spawn(Camera2dBundle::default());
 
-    commands.spawn(SeedBag { seeds: vec![ KUMARA.clone(), MANUKA.clone(), PUHA.clone()], selected:0});
+    commands.spawn(SeedBag { seeds: vec![], selected:0});
 
     for y in 0..5
     {
@@ -178,7 +176,7 @@ pub(crate) fn bed_interact(mut bed_query: Query<(&mut PlantBed, &mut Transform)>
         {
             // planting example -> put in func?
             let mut plant_bed: &mut PlantBed = &mut bed.0;
-            if plant_bed.plant == None
+            if plant_bed.plant.is_none()
             {
 
             }

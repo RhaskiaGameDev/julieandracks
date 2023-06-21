@@ -5,27 +5,50 @@ mod plant_management;
 
 use plant_management::*;
 use enemies::*;
+//
+// let KUMARA: Plant = Plant { name: "Kumara", sow: Season::Autumn, harvest: Season::Spring,
+// ability: Ability::Tank(10), last_used: Stopwatch::new(), delay: 2.0, };
+//
+// let MANUKA: Plant = Plant { name: "Manuka", sow: Season::Autumn, harvest: Season::Spring,
+// ability: Ability::Shooter(10.), last_used: Stopwatch::new(), delay: 2.0, };
+//
+// let PUHA: Plant = Plant { name: "Puha", sow: Season::Autumn, harvest: Season::Spring,
+// ability: Ability::AOE(10.), last_used: Stopwatch::new(), delay: 2.0, };
 
 fn manage_attacks(
-    commands: Commands,
+    mut commands: Commands,
     mut plant_query: Query<&PlantBed>,
     time: Res<Time>,
+    asset_server: Res<AssetServer>,
 ) 
 {
-    for plant: PlantBed in plant_query.iter_mut()
+    //let projectile = asset_server.load("projectile.png");
+
+    for mut plant_bed in plant_query.iter_mut()
     {
-        if plant.plant.last_used.elapsed_secs < plant.plant.delay { continue; }
+        let mut plant = match &mut plant_bed.plant
+        {
+            Some(a) => a,
+            None => continue,
+        };
+
+        if plant.last_used.elapsed_secs() < plant.delay { continue; }
         plant.last_used.reset();
 
-        match plant.plant.ability 
-        {
-            Shooter(p) => commands.spawn((SpriteBundle {
-                texture: bed_sprite.clone(),
-                transform: Transform::from_translation(Vec3::new(32. * (x as f32 - 2.), 32. * (y as f32 - 3.), 0.)),
-                ..default()}),
-                Projectile { speed: 10., pow: 10 }),
-            AOE(r, s) => 
-        }
+        // if plant.ability == Ability::Shooter
+        // {
+        //     commands.spawn((
+        //         SpriteBundle {
+        //         texture: projectile.clone(),
+        //         transform: Transform::from_translation(Vec3::new(0., 0., 0.)),
+        //         ..default()},
+        //         Projectile { speed: 10., damage: 10 }));
+        // }
+        //
+        // if plant.ability == Ability::Shooter
+        // {
+        //     println!("yuh");
+        // }
     }
 
 }
@@ -36,7 +59,7 @@ fn manage_enemies(mut query: Query<(&Enemy, &Health, &Transform)>,
     // move all up
     for e in query.iter_mut()
     {
-        let mut (enemy, health, trans) = e;
+        let (mut enemy, mut health, mut trans) = e;
 
         // idk check if they hit then start attacking
 
