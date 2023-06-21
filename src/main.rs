@@ -8,7 +8,7 @@ use enemies::*;
 
 fn manage_attacks(
     commands: Commands,
-    plant_query: Query<PlantBed>,
+    mut plant_query: Query<&PlantBed>,
     time: Res<Time>,
 ) 
 {
@@ -30,9 +30,16 @@ fn manage_attacks(
 
 }
 
-fn manage_enemies()
+fn manage_enemies(mut query: Query<(&Enemy, &Health, &Transform)>,
+                time: Res<Time>)
 {
     // move all up
+    for e in query.iter_mut()
+    {
+        let mut (enemy, health, trans) = e;
+
+        trans.translation.y -= enemy.speed * time.delta_seconds();
+    }
 
     // check if they hit anything, if so stop and attack
 }
