@@ -2,6 +2,7 @@ use bevy::prelude::*;
 mod camera;
 mod enemies;
 mod plant_management;
+
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
