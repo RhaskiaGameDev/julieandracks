@@ -75,6 +75,9 @@ pub(crate) fn bed_interact(
 
         bed_trans.scale = Vec3::new(1.1, 1.1, 1.1);
 
+        if buttons.just_pressed(MouseButton::Right) {
+            drop(game);
+        }
         if buttons.just_pressed(MouseButton::Left) {
             // planting example -> put in func?
             let mut plant_bed: &mut PlantBed = &mut bed.0;
@@ -82,10 +85,6 @@ pub(crate) fn bed_interact(
                 plant_bed.plant = Some(seed_bag.seeds[seed_bag.selected]);
                 *bed.2 = asset_server.load("manuka.png");
                 println!("planted a plant");
-
-                if buttons.pressed(MouseButton::Right) && buttons.pressed(MouseButton::Left) {
-                    println!("removed a plant");
-                }
             }
         }
     }
