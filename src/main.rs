@@ -76,6 +76,7 @@ pub(crate) fn bed_interact(
         bed_trans.scale = Vec3::new(1.1, 1.1, 1.1);
 
         if buttons.just_pressed(MouseButton::Right) {
+            *bed.2 = asset_server.load("bed.png");
             println!("right clicked");
         }
         if buttons.just_pressed(MouseButton::Left) {
