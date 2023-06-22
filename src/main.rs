@@ -39,6 +39,8 @@ time: Res<Time>)
 {
     for mut i in query.iter_mut()
     {
+        if i.1.translation.y > 20. { continue; }
+
         i.1.translation.y += i.0.speed * time.delta_seconds();
     }
 }
