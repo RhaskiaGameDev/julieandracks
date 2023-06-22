@@ -47,7 +47,7 @@ pub fn manage_sticky(mut sticky_query: Query<(&Sticky, &mut Transform)>,
      }
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Copy)]
 pub enum Season
 {
     Spring,
@@ -56,7 +56,7 @@ pub enum Season
     Winter,
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Copy)]
 pub enum Ability 
 {
     Shooter (f32), // attack
@@ -72,14 +72,14 @@ pub struct Projectile
     pub(crate) damage: i32,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 pub struct Plant
 {
     name: &'static str,
     sow: Season,
     harvest: Season,
     pub(crate) ability: Ability,
-    pub(crate) last_used: Stopwatch,
+    pub(crate) last_used: f32,
     pub(crate) delay: f32,
 }
 
@@ -106,17 +106,22 @@ pub(crate) fn spawn_beds(mut commands: Commands,
 {
     commands.spawn(Camera2dBundle::default());
 
-    commands.spawn(SeedBag { seeds: vec![], selected:0});
+    commands.spawn(SeedBag { seeds: vec![
+        Plant { name: "Kumara", sow: Season::Spring, harvest: Season::Autumn, ability: Ability::None, last_used: 0.0, delay: 2.0 } ],
+        selected:0});
 
-    for y in 0..5
-    {
-        commands.spawn(
-            SpriteBundle {
+
+    commands.spawn(
+        SpriteBundle {
+        texture: asset_server.load("shelfleft.png"),
+        transform: Transform::from_translation(Vec3::new(170., 80., 0.)),
+        ..default() });
+
+    commands.spawn(
+        SpriteBundle {
             texture: asset_server.load("shelfleft.png"),
-            transform: Transform::from_translation(Vec3::new(110., y as f32 * 10., 0.)),
+            transform: Transform::from_translation(Vec3::new(-170., 80., 0.)),
             ..default() });
-    }
-
 
 
     let bed_sprite =  asset_server.load("bed.png");
@@ -128,7 +133,7 @@ pub(crate) fn spawn_beds(mut commands: Commands,
             commands.spawn((
                 SpriteBundle {
                     texture: bed_sprite.clone(),
-                    transform: Transform::from_translation(Vec3::new(32. * (x as f32 - 2.), 32. * (y as f32 - 3.), 0.)),
+                    transform: Transform::from_translation(Vec3::new(32. * (x as f32 - 2.), 32. * (y as f32 + 0.5), 0.)),
                     ..default() },
                 PlantBed{ plant: None, row: x, column: y },
                 Health { health: 100 }));
@@ -141,48 +146,7 @@ pub(crate) fn spawn_beds(mut commands: Commands,
 
 //}
 
-// will hover over beds and interact with them
-pub(crate) fn bed_interact(mut bed_query: Query<(&mut PlantBed, &mut Transform)>,
-                           mouse_pos: Query<&Window, With<PrimaryWindow>>,
-                           buttons: Res<Input<MouseButton>>,
-                           camera_q: Query<(&Camera, &GlobalTransform)>,
-                           mut seed_bag_q: Query<&mut SeedBag>)
-{
-    // https://bevy-cheatbook.github.io/cookbook/cursor2world.html
-    let (camera, camera_transform) = camera_q.single();
-    let mut seed_bag: &mut SeedBag = &mut seed_bag_q.single_mut();
 
-    let m_pos = match mouse_pos.single().cursor_position()
-        .and_then(|cursor| camera.viewport_to_world(camera_transform, cursor))
-        .map(|ray| ray.origin.truncate())
-    {
-        Some(a) => a,
-        None => return,
-    };
-
-    for mut bed in bed_query.iter_mut()
-    {
-        let mut bed_trans: &mut Transform = &mut bed.1;
-        let bed_pos = Vec2::new(bed_trans.translation.x, bed_trans.translation.y);
-        let rect = Rect::from_center_size(bed_pos, Vec2::ONE * 32.);
-
-        bed_trans.scale = Vec3::new(1., 1., 1.);
-
-        if !rect.contains(m_pos) { continue; }
-
-        bed_trans.scale = Vec3::new(1.1, 1.1, 1.1);
-
-        if buttons.just_pressed(MouseButton::Left)
-        {
-            // planting example -> put in func?
-            let mut plant_bed: &mut PlantBed = &mut bed.0;
-            if plant_bed.plant.is_none()
-            {
-
-            }
-        }
-    }
-}
 
 
 
