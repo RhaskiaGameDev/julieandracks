@@ -83,12 +83,8 @@ pub(crate) fn bed_interact(
                 *bed.2 = asset_server.load("manuka.png");
                 println!("planted a plant");
 
-                if buttons.just_pressed(MouseButton::Right) {
-                    if plant_bed.plant = Manuka {
-                        plant_bed.plant = None;
-                        *bed.2 = asset_server.load("bed.png");
-                        println!("removed a plant");
-                    }
+                if buttons.pressed(MouseButton::Right) && buttons.pressed(MouseButton::Left) {
+                    println!("removed a plant");
                 }
             }
         }
