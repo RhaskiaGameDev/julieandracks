@@ -67,7 +67,7 @@ pub(crate) fn bed_interact(mut bed_query: Query<(&mut PlantBed, &mut Transform, 
     {
         let mut bed_trans: &mut Transform = &mut bed.1;
         let bed_pos = Vec2::new(bed_trans.translation.x, bed_trans.translation.y);
-        let rect = Rect::from_center_size(bed_pos - Vec2::Y * 1.5, Vec2::ONE * 32.);
+        let rect = Rect::from_center_size(bed_pos - Vec2::Y * 4., Vec2::ONE * 32.);
 
         bed_trans.scale = Vec3::new(1., 1., 1.);
 

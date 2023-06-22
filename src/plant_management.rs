@@ -133,7 +133,7 @@ pub(crate) fn spawn_beds(mut commands: Commands,
             commands.spawn((
                 SpriteBundle {
                     texture: bed_sprite.clone(),
-                    transform: Transform::from_translation(Vec3::new(32. * (x as f32 - 2.), 32. * (y as f32 + 0.5), 0.)),
+                    transform: Transform::from_translation(Vec3::new(32. * (x as f32 - 2.), 32. * (y as f32 + 0.5), (5-y) as f32)),
                     ..default() },
                 PlantBed{ plant: None, row: x, column: y },
                 Health { health: 100 }));
