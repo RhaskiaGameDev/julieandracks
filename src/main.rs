@@ -25,6 +25,7 @@ fn main() {
         .add_system(bed_interact)
         .add_startup_system(plant_management::spawn_beds)
         .add_startup_system(enemies::spawn_enemies)
+        .add_startup_system(setup)
         .add_system(move_enemies)
         .add_system(scroll_events)
         .add_system(manage_sticky)
@@ -57,7 +58,10 @@ fn scroll_events(mut scroll_evr: EventReader<MouseWheel>, mut seed_bag_q: Query<
         }
     }
 }
-
+fn setup(asset_server: Res<AssetServer>, audio: Res<Audio>) {
+    let music = asset_server.load("assets/game thing.ogg");
+    audio.play(music);
+}
 fn move_enemies(
     mut query: Query<(&Enemy, &mut Transform)>,
     //mut query_plant: Query<(&PlantBed, &mut Transform)>,
@@ -94,12 +98,15 @@ pub(crate) fn bed_interact(
         None => return,
     };
     // code to kill flys when you click on them
-    /*for mut Enemy in Enemy_query.iter_mut() {
+    pub(crate) fn enemy_kill(
+        mut Enemy_query: Query<(&mut Enemy, &mut Transform, &mut Handle<Image>)>,
+    ) {
+    for mut Enemy in Enemy_query.iter_mut() {
         let mut Enemy_trans: &mut Transform = &mut Enemy.1;
         let mut fly_pos = Vec2::new(Enemy_trans.translation.x, Enemy_trans.translation.y);
         let mut rect2 = Rect::from_center_size(fly_pos, Vec2::ONE * 32.);
     }
-    */
+
     //code for planting
     for mut bed in bed_query.iter_mut() {
         let mut bed_trans: &mut Transform = &mut bed.1;
