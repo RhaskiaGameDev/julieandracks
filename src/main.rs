@@ -97,15 +97,29 @@ pub(crate) fn bed_interact(
         Some(a) => a,
         None => return,
     };
+
     // code to kill flys when you click on them
-    pub(crate) fn enemy_kill(
+   /* pub(crate) fn enemy_kill(
         mut Enemy_query: Query<(&mut Enemy, &mut Transform, &mut Handle<Image>)>,
     ) {
-    for mut Enemy in Enemy_query.iter_mut() {
-        let mut Enemy_trans: &mut Transform = &mut Enemy.1;
-        let mut fly_pos = Vec2::new(Enemy_trans.translation.x, Enemy_trans.translation.y);
-        let mut rect2 = Rect::from_center_size(fly_pos, Vec2::ONE * 32.);
+        for mut Enemy in Enemy_query.iter_mut() {
+            let mut Enemy_trans: &mut Transform = &mut Enemy.1;
+            let mut fly_pos = Vec2::new(Enemy_trans.translation.x, Enemy_trans.translation.y);
+            let mut rect2 = Rect::from_center_size(fly_pos, Vec2::ONE * 32.);
+            if !rect2.contains(m_pos) {
+                continue;
+            }
+        }
     }
+            let mut Enemy: &mut Enemy = &mut Enemy.0;
+            if buttons.just_pressed(MouseButton::Left) {
+                Enemy.health -= 1;
+                if Enemy.health == 0 {
+                    Enemy.speed = 0.0;
+                }
+            }
+        }
+   */ 
 
     //code for planting
     for mut bed in bed_query.iter_mut() {
@@ -142,4 +156,4 @@ pub(crate) fn bed_interact(
             }
         }
     }
-}
+
