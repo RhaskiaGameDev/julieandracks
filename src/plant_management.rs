@@ -47,7 +47,7 @@ pub fn manage_sticky(mut sticky_query: Query<(&Sticky, &mut Transform)>,
      }
 }
 
-#[derive(Clone, PartialEq, Copy)]
+#[derive(Clone, PartialEq, Copy, Debug)]
 pub enum Season
 {
     Spring,
@@ -56,7 +56,7 @@ pub enum Season
     Winter,
 }
 
-#[derive(Clone, PartialEq, Copy)]
+#[derive(Clone, PartialEq, Copy, Debug)]
 pub enum Ability 
 {
     Shooter (f32), // attack
@@ -65,14 +65,14 @@ pub enum Ability
     None,
 }
 
-#[derive(Component, Clone, PartialEq)]
+#[derive(Component, Clone, PartialEq, Debug)]
 pub struct Projectile 
 {
     pub(crate) speed: f32,
     pub(crate) damage: i32,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct Plant
 {
     name: &'static str,
@@ -83,7 +83,7 @@ pub struct Plant
     pub(crate) delay: f32,
 }
 
-#[derive(Component)]
+#[derive(Component, Debug)]
 pub struct PlantBed
 {
     pub plant: Option<Plant>,

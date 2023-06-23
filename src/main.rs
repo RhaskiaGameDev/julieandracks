@@ -24,27 +24,42 @@ fn main() {
         .add_startup_system(plant_management::spawn_beds)
         .add_startup_system(enemies::spawn_enemies)
         .add_system(move_enemies)
-        //.add_system(manage_attacks)
+        .add_system(scroll_events)
         .add_system(manage_sticky)
         .run();
 }
 
+fn scroll_events(mut scroll_evr: EventReader<MouseWheel>) {
+    use bevy::input::mouse::MouseScrollUnit;
+    for ev in scroll_evr.iter() {
+        match ev.unit {
+            MouseScrollUnit::Line => {
+                println!(
+                    "Scroll (line units): vertical: {}, horizontal: {}",
+                    ev.y, ev.x
+                );
+            }
+            MouseScrollUnit::Pixel => {
+                println!(
+                    "Scroll (pixel units): vertical: {}, horizontal: {}",
+                    ev.y, ev.x
+                );
+            }
+        }
+    }
+}
+
 fn move_enemies(mut query: Query<(&Enemy, &mut Transform)>,
-                mut query_plant: Query<(&PlantBed, &mut Transform)>,
+                //mut query_plant: Query<(&PlantBed, &mut Transform)>,
                 time: Res<Time>) {
 
-
     'outer: for mut i in query.iter_mut() {
-        for mut j in query_plant.iter_mut()
-        {
-            if i.0.row == j.0.row as usize { continue; }
-
-            if j.1.translation.y < i.1.translation.y { continue 'outer ; }
-        }
 
         i.1.translation.y += i.0.speed * time.delta_seconds();
     }
 }
+
+
 
 // will hover over beds and interact with them
 pub(crate) fn bed_interact(
@@ -83,26 +98,6 @@ pub(crate) fn bed_interact(
 
         bed_trans.scale = Vec3::new(1.1, 1.1, 1.1);
 
-        fn scroll_events(mut scroll_evr: EventReader<MouseWheel>) {
-            use bevy::input::mouse::MouseScrollUnit;
-            for ev in scroll_evr.iter() {
-                match ev.unit {
-                    MouseScrollUnit::Line => {
-                        println!(
-                            "Scroll (line units): vertical: {}, horizontal: {}",
-                            ev.y, ev.x
-                        );
-                    }
-                    MouseScrollUnit::Pixel => {
-                        println!(
-                            "Scroll (pixel units): vertical: {}, horizontal: {}",
-                            ev.y, ev.x
-                        );
-                    }
-                }
-            }
-        }
-        scroll_events(commands.add_event::<MouseWheel>(bed.0));
         let mut plant_bed: &mut PlantBed = &mut bed.0;
         if buttons.just_pressed(MouseButton::Right) {
             plant_bed.plant = None;
