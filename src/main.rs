@@ -3,6 +3,7 @@ mod camera;
 mod enemies;
 mod plant_management;
 use bevy::input::mouse::MouseWheel;
+use bevy::sprite::collide_aabb::{collide, Collision};
 use bevy::window::PrimaryWindow;
 use enemies::*;
 use plant_management::*;
@@ -27,6 +28,7 @@ fn main() {
         .add_system(move_enemies)
         .add_system(scroll_events)
         .add_system(manage_sticky)
+        //.add_event::<CollisionEvent>()
         .run();
 }
 
@@ -56,17 +58,18 @@ fn scroll_events(mut scroll_evr: EventReader<MouseWheel>, mut seed_bag_q: Query<
     }
 }
 
-fn move_enemies(mut query: Query<(&Enemy, &mut Transform)>,
-                //mut query_plant: Query<(&PlantBed, &mut Transform)>,
-                time: Res<Time>) {
-
+fn move_enemies(
+    mut query: Query<(&Enemy, &mut Transform)>,
+    //mut query_plant: Query<(&PlantBed, &mut Transform)>,
+    time: Res<Time>,
+) {
     'outer: for mut i in query.iter_mut() {
-
+        if i.0.speed == 0.0 {
+            continue;
+        }
         i.1.translation.y += i.0.speed * time.delta_seconds();
     }
 }
-
-
 
 // will hover over beds and interact with them
 pub(crate) fn bed_interact(
@@ -90,7 +93,14 @@ pub(crate) fn bed_interact(
         Some(a) => a,
         None => return,
     };
-
+    // code to kill flys when you click on them
+    /*for mut Enemy in Enemy_query.iter_mut() {
+        let mut Enemy_trans: &mut Transform = &mut Enemy.1;
+        let mut fly_pos = Vec2::new(Enemy_trans.translation.x, Enemy_trans.translation.y);
+        let mut rect2 = Rect::from_center_size(fly_pos, Vec2::ONE * 32.);
+    }
+    */
+    //code for planting
     for mut bed in bed_query.iter_mut() {
         let mut bed_trans: &mut Transform = &mut bed.1;
         let mut bed_pos = Vec2::new(bed_trans.translation.x, bed_trans.translation.y);
@@ -116,8 +126,11 @@ pub(crate) fn bed_interact(
 
             if plant_bed.plant.is_none() {
                 plant_bed.plant = Some(seed_bag.seeds[seed_bag.selected]);
-                if seed_bag.selected == 0 { *bed.2 = asset_server.load("manuka.png"); }
-                else { *bed.2 = asset_server.load("puha.png"); }
+                if seed_bag.selected == 0 {
+                    *bed.2 = asset_server.load("manuka.png");
+                } else {
+                    *bed.2 = asset_server.load("puha.png");
+                }
                 println!("planted a plant");
             }
         }
