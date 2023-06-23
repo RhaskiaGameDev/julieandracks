@@ -110,17 +110,22 @@ pub(crate) fn spawn_beds(mut commands: Commands,
         Plant { name: "Kumara", sow: Season::Spring, harvest: Season::Autumn, ability: Ability::None, last_used: 0.0, delay: 2.0 } ],
         selected:0});
 
+    commands.spawn(
+        SpriteBundle {
+            texture: asset_server.load("bg.png"),
+            transform: Transform::from_translation(Vec3::default()),
+            ..default() });
 
     commands.spawn(
         SpriteBundle {
         texture: asset_server.load("shelfleft.png"),
-        transform: Transform::from_translation(Vec3::new(170., 80., 0.)),
+        transform: Transform::from_translation(Vec3::new(170., 80., 0.5)),
         ..default() });
 
     commands.spawn(
         SpriteBundle {
             texture: asset_server.load("shelfleft.png"),
-            transform: Transform::from_translation(Vec3::new(-170., 80., 0.)),
+            transform: Transform::from_translation(Vec3::new(-170., 80., 0.5)),
             ..default() });
 
 

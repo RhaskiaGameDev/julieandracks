@@ -19,6 +19,7 @@ use plant_management::*;
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
+        .insert_resource(ClearColor(Color::rgb(0.54, 0.69, 0.37)))
         .add_system(camera::camera_zoom)
         .add_system(bed_interact)
         .add_startup_system(plant_management::spawn_beds)
