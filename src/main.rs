@@ -83,6 +83,26 @@ pub(crate) fn bed_interact(
 
         bed_trans.scale = Vec3::new(1.1, 1.1, 1.1);
 
+        fn scroll_events(mut scroll_evr: EventReader<MouseWheel>) {
+            use bevy::input::mouse::MouseScrollUnit;
+            for ev in scroll_evr.iter() {
+                match ev.unit {
+                    MouseScrollUnit::Line => {
+                        println!(
+                            "Scroll (line units): vertical: {}, horizontal: {}",
+                            ev.y, ev.x
+                        );
+                    }
+                    MouseScrollUnit::Pixel => {
+                        println!(
+                            "Scroll (pixel units): vertical: {}, horizontal: {}",
+                            ev.y, ev.x
+                        );
+                    }
+                }
+            }
+        }
+        scroll_events(commands.add_event::<MouseWheel>(bed.0));
         let mut plant_bed: &mut PlantBed = &mut bed.0;
         if buttons.just_pressed(MouseButton::Right) {
             plant_bed.plant = None;
