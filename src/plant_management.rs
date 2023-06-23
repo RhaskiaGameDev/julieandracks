@@ -107,7 +107,8 @@ pub(crate) fn spawn_beds(mut commands: Commands,
     commands.spawn(Camera2dBundle::default());
 
     commands.spawn(SeedBag { seeds: vec![
-        Plant { name: "Kumara", sow: Season::Spring, harvest: Season::Autumn, ability: Ability::None, last_used: 0.0, delay: 2.0 } ],
+        Plant { name: "Manuka", sow: Season::Spring, harvest: Season::Autumn, ability: Ability::None, last_used: 0.0, delay: 2.0 },
+        Plant { name: "Puha", sow: Season::Spring, harvest: Season::Autumn, ability: Ability::None, last_used: 0.0, delay: 2.0 }],
         selected:0});
 
     commands.spawn(

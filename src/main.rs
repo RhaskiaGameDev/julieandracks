@@ -30,8 +30,10 @@ fn main() {
         .run();
 }
 
-fn scroll_events(mut scroll_evr: EventReader<MouseWheel>) {
+fn scroll_events(mut scroll_evr: EventReader<MouseWheel>, mut seed_bag_q: Query<&mut SeedBag>) {
     use bevy::input::mouse::MouseScrollUnit;
+
+    let mut seed_bag: &mut SeedBag = &mut seed_bag_q.single_mut();
     for ev in scroll_evr.iter() {
         match ev.unit {
             MouseScrollUnit::Line => {
@@ -39,12 +41,16 @@ fn scroll_events(mut scroll_evr: EventReader<MouseWheel>) {
                     "Scroll (line units): vertical: {}, horizontal: {}",
                     ev.y, ev.x
                 );
+                seed_bag.selected += (ev.y + 2.) as usize;
+                seed_bag.selected %= 2;
             }
             MouseScrollUnit::Pixel => {
                 println!(
                     "Scroll (pixel units): vertical: {}, horizontal: {}",
                     ev.y, ev.x
                 );
+                seed_bag.selected += (ev.y + 2.) as usize;
+                seed_bag.selected %= 2;
             }
         }
     }
@@ -110,7 +116,8 @@ pub(crate) fn bed_interact(
 
             if plant_bed.plant.is_none() {
                 plant_bed.plant = Some(seed_bag.seeds[seed_bag.selected]);
-                *bed.2 = asset_server.load("manuka.png");
+                if seed_bag.selected == 0 { *bed.2 = asset_server.load("manuka.png"); }
+                else { *bed.2 = asset_server.load("puha.png"); }
                 println!("planted a plant");
             }
         }
