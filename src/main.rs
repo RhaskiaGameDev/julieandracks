@@ -29,10 +29,17 @@ fn main() {
         .run();
 }
 
-fn move_enemies(mut query: Query<(&Enemy, &mut Transform)>, time: Res<Time>) {
-    for mut i in query.iter_mut() {
-        if i.1.translation.y > 20. {
-            continue;
+fn move_enemies(mut query: Query<(&Enemy, &mut Transform)>,
+                mut query_plant: Query<(&PlantBed, &mut Transform)>,
+                time: Res<Time>) {
+
+
+    'outer: for mut i in query.iter_mut() {
+        for mut j in query_plant.iter_mut()
+        {
+            if i.0.row == j.0.row as usize { continue; }
+
+            if j.1.translation.y < i.1.translation.y { continue 'outer ; }
         }
 
         i.1.translation.y += i.0.speed * time.delta_seconds();
