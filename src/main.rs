@@ -52,7 +52,7 @@ pub(crate) fn bed_interact(
     let (camera, camera_transform) = camera_q.single();
     let mut seed_bag: &mut SeedBag = &mut seed_bag_q.single_mut();
 
-    let m_pos = match mouse_pos
+    let mut m_pos = match mouse_pos
         .single()
         .cursor_position()
         .and_then(|cursor| camera.viewport_to_world(camera_transform, cursor))
@@ -64,8 +64,9 @@ pub(crate) fn bed_interact(
 
     for mut bed in bed_query.iter_mut() {
         let mut bed_trans: &mut Transform = &mut bed.1;
-        let bed_pos = Vec2::new(bed_trans.translation.x, bed_trans.translation.y);
-        let rect = Rect::from_center_size(bed_pos - Vec2::Y * 4., Vec2::ONE * 32.);
+        let mut bed_pos = Vec2::new(bed_trans.translation.x, bed_trans.translation.y);
+        bed_pos.y -= 32.;
+        let rect = Rect::from_center_size(bed_pos, Vec2::ONE * 32.);
 
         bed_trans.scale = Vec3::new(1., 1., 1.);
 
@@ -75,13 +76,15 @@ pub(crate) fn bed_interact(
 
         bed_trans.scale = Vec3::new(1.1, 1.1, 1.1);
 
+        let mut plant_bed: &mut PlantBed = &mut bed.0;
         if buttons.just_pressed(MouseButton::Right) {
+            plant_bed.plant = None;
             *bed.2 = asset_server.load("bed.png");
             println!("right clicked");
         }
         if buttons.just_pressed(MouseButton::Left) {
             // planting example -> put in func?
-            let mut plant_bed: &mut PlantBed = &mut bed.0;
+
             if plant_bed.plant.is_none() {
                 plant_bed.plant = Some(seed_bag.seeds[seed_bag.selected]);
                 *bed.2 = asset_server.load("manuka.png");
